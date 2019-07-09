@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <functional>
 
-enum { Up, Down, Left, Right, DiagonalUL, DiagonalUR, DiagonalDL, DiagonalDR};
+enum { Up, Down, Left, Right, DiagonalUL, DiagonalUR, DiagonalDL, DiagonalDR };
 
 class Game
 {
@@ -27,11 +27,13 @@ public:
 	Game(int _column, int _line, char f1_, int _mod);
 	Game(const Game & _game);
 
+	~Game();
+
 	int GetMinSize() const;
 	bool GetIsPlaying() { return m_isPlaying; }
-private:
-	Game newBalance_help(Game _game, int _x, int _y, int _way, int _s, int _stop);
+	static Game newBalance_help(Game _game, int _x, int _y, int _way, int _s, int _stop);
 
+private:
 	int m_x;
 	int m_y;
 
@@ -41,10 +43,17 @@ private:
 	int** m_mas;
 };
 
-Game::Game() : m_x(0),m_y(0), m_player1(0), m_player2(1), m_isPlaying(true){}
+Game::~Game()
+{
+	for (int i = 0; i < m_y; i++)
+		delete[] m_mas[i];
+	delete[] m_mas;
+}
+
+Game::Game() : m_x(0), m_y(0), m_player1(0), m_player2(1), m_isPlaying(true) {}
 
 Game::Game(int _x, int _y, char _f1, int _mod)
-	:m_isPlaying(true)
+	: m_isPlaying(true)
 {
 	if (_x < 5)	m_x = 5;
 	else m_x = _x;
@@ -57,21 +66,19 @@ Game::Game(int _x, int _y, char _f1, int _mod)
 		m_player1 = 1;
 	m_player2 = !m_player1;
 
-	if (_mod == 1){
+	if (_mod == 1) {
 		m_f1 = userMove;
 		m_f2 = userMove;
 	}
 
-	else if (_mod == 2)	{
+	else if (_mod == 2) {
 		m_f1 = botMove;
 		m_f2 = botMove;
 	}
-	else{
+	else {
 		m_f1 = userMove;
 		m_f2 = botMove;
 	}
-
-
 
 	m_mas = new int *[m_y];
 	for (int i = 0; i < m_y; i++)
@@ -104,10 +111,8 @@ Game & Game::operator=(Game && _game)
 	m_player2 = !m_player1;
 
 	m_isPlaying = _game.m_isPlaying;
-
-	delete[] m_mas;
-
-	m_mas = _game.m_mas;
+	
+	std::swap(m_mas,_game.m_mas);
 }
 
 int Game::GetMinSize() const
@@ -122,52 +127,52 @@ int Game::power(Game _game, int _x, int _y, int _way, int _s, int _stop)
 
 	int power = 1;
 	int k_y, k_x;
-	
+
 	switch (_way)
 	{
-		case Up: 
-			k_y = 1;
-			k_x = 0;
-			break;
+	case Up:
+		k_y = 1;
+		k_x = 0;
+		break;
 
-		case Down: 
-			k_y = -1;
-			k_x = 0;
-			break;
+	case Down:
+		k_y = -1;
+		k_x = 0;
+		break;
 
-		case Left: 
-			k_y = 0;
-			k_x = 1;
-			break;
+	case Left:
+		k_y = 0;
+		k_x = 1;
+		break;
 
-		case Right: 
-			k_y = 0;
-			k_x = -1;
-			break;
+	case Right:
+		k_y = 0;
+		k_x = -1;
+		break;
 
-		case DiagonalUL: 
-			k_y = 1;
-			k_x = 1;
-			break;
+	case DiagonalUL:
+		k_y = 1;
+		k_x = 1;
+		break;
 
-		case DiagonalUR:
-			k_y = 1;
-			k_x = -1;
-			break;
+	case DiagonalUR:
+		k_y = 1;
+		k_x = -1;
+		break;
 
-		case DiagonalDL:
-			k_y = -1;
-			k_x = 1;
-			break;
+	case DiagonalDL:
+		k_y = -1;
+		k_x = 1;
+		break;
 
-		case DiagonalDR:
-			k_y = -1;
-			k_x = -1;
-			break;
+	case DiagonalDR:
+		k_y = -1;
+		k_x = -1;
+		break;
 
-		default:
-			k_y = 0;
-			k_x = 0;
+	default:
+		k_y = 0;
+		k_x = 0;
 	}
 
 	for (int i = 1; i < 4; i++)
@@ -194,49 +199,49 @@ Game Game::newBalance_help(Game _game, int _x, int _y, int _way, int _s, int _st
 	int k_y, k_x;
 	switch (_way)
 	{
-		case Up:
-			k_y = -1;
-			k_x = 0;
+	case Up:
+		k_y = -1;
+		k_x = 0;
 		break;
 
-		case Down:
-			k_y = 1;
-			k_x = 0;
+	case Down:
+		k_y = 1;
+		k_x = 0;
 		break;
 
-		case Left:
-			k_y = 0;
-			k_x = -1;
+	case Left:
+		k_y = 0;
+		k_x = -1;
 		break;
 
-		case Right:
-			k_y = 0;
-			k_x = 1;
+	case Right:
+		k_y = 0;
+		k_x = 1;
 		break;
 
-		case DiagonalUL:
-			k_y = -1;
-			k_x = -1;
+	case DiagonalUL:
+		k_y = -1;
+		k_x = -1;
 		break;
 
-		case DiagonalUR:
-			k_y = -1;
-			k_x = 1;
+	case DiagonalUR:
+		k_y = -1;
+		k_x = 1;
 		break;
 
-		case DiagonalDL:
-			k_y = 1;
-			k_x = -1;
+	case DiagonalDL:
+		k_y = 1;
+		k_x = -1;
 		break;
 
-		case DiagonalDR:
-			k_y = 1;
-			k_x = 1;
+	case DiagonalDR:
+		k_y = 1;
+		k_x = 1;
 		break;
 
-		default:
-			k_y = 0;
-			k_x = 0;
+	default:
+		k_y = 0;
+		k_x = 0;
 	}
 
 	for (int i = 1; i < 5; i++)
@@ -247,7 +252,6 @@ Game Game::newBalance_help(Game _game, int _x, int _y, int _way, int _s, int _st
 			break;
 		if (_game.m_mas[_y + k_y * i][_x + k_x * i] == _stop)
 			break;
-
 
 		if ((_y + !k_y * 4 + k_y * i < 0) || (_y + !k_y * 4 + k_y * i >= _game.m_y))
 			if ((_x + !k_x * 4 + k_x * i < 0) || (_x + !k_x * 4 + k_x * i >= _game.m_x))
@@ -270,7 +274,7 @@ Game Game::newBalance(Game _game, int _s, int _x, int _y)
 {
 	for (int i = Up; i <= DiagonalDR; i++)
 	{
-		_game = _game.newBalance_help(_game, _x, _y, i, _s, !_s);
+		_game = Game::newBalance_help(_game, _x, _y, i, _s, !_s);
 	}
 	return _game;
 }
@@ -366,7 +370,7 @@ Game Game::botMove(const int _s, Game _game)
 		maxY = rand() % _game.m_y;
 	}
 
-	if(_game.m_mas[maxY][maxX] > 1)
+	if (_game.m_mas[maxY][maxX] > 1)
 		_game.m_mas[maxY][maxX] = _s;
 
 	if (winner(_game, maxX, maxY, _s))
@@ -374,7 +378,7 @@ Game Game::botMove(const int _s, Game _game)
 		_game.m_isPlaying = false;
 		return _game;
 	}
-	return newBalance(_game, _s, maxX,maxY);
+	return newBalance(_game, _s, maxX, maxY);
 }
 
 Game Game::userMove(const int _s, Game _game)
@@ -391,51 +395,51 @@ Game Game::userMove(const int _s, Game _game)
 
 		Game::Print(g_print);
 
-		while(ch <= 0)
+		while (ch <= 0)
 			ch = _getch();
-		
-			switch (ch)
+
+		switch (ch)
+		{
+		case 72:
+			// Up arrow
+			if (y - 1 >= 0)
+				y--;
+			break;
+
+		case 80:
+			// Down arrow
+			if (y + 1 < _game.m_y)
+				y++;
+			break;
+
+		case 75:
+			// Left arrow
+
+			if (x - 1 >= 0)
+				x--;
+			break;
+
+		case 77:
+			// Right arrow
+			if (x + 1 < _game.m_x)
+				x++;
+			break;
+
+		case 32:
+			// Space
+			if (_game.m_mas[y][x] > 1)
 			{
-			case 72:
-				// Up arrow
-				if(y - 1 >= 0)
-					y--;
-				break;
-
-			case 80:
-				// Down arrow
-				if (y + 1 < _game.m_y)
-					y++;
-				break;
-
-			case 75:
-				// Left arrow
-
-				if (x - 1 >= 0)
-					x--;
-				break;
-
-			case 77:
-				// Right arrow
-				if (x + 1 < _game.m_x)
-					x++;
-				break;
-
-			case 32:
-				// Space
-				if (_game.m_mas[y][x] > 1)
+				_game.m_mas[y][x] = _s;
+				if (winner(_game, x, y, _s))
 				{
-					_game.m_mas[y][x] = _s;
-					if (winner(_game, x, y, _s))
-					{
-						_game.m_isPlaying = false;
-						return _game;
-					}
-					return _game.newBalance(_game, _s, x, y);
+					_game.m_isPlaying = false;
+					return _game;
 				}
-				break;
+				return Game::newBalance(_game, _s, x, y);
 			}
-		
+			break;
+		}
+
 	}
 
 	return _game;
@@ -447,7 +451,7 @@ void Game::Print(Game _game)
 	for (int i = 0; i < _game.m_x * 4; i++)
 		std::cout << '_';
 	std::cout << '\n';
-	
+
 	for (int i = 0; i < _game.m_y; i++)
 	{
 		for (int j = 0; j < _game.m_x; j++)
@@ -497,7 +501,7 @@ Game giveMeGame()
 	std::cout << "move by arrows, space -- enter zero or cross \n";
 	std::cout << "enter x(min 5) ";
 	std::cin >> x;
-	std::cout <<'\n'<< "enter y(min 5) ";
+	std::cout << '\n' << "enter y(min 5) ";
 	std::cin >> y;
 	std::cout << '\n';
 	std::cout << '\n' << "enter figure1(o/x) ";
@@ -523,10 +527,10 @@ void Game::start_Game()
 		}
 
 		system("pause");
-		game = game.m_f1(game.m_player1,game);
+		game = game.m_f1(game.m_player1, game);
 
 		Game::Print(game);
-		if (game.GetIsPlaying() == false){
+		if (game.GetIsPlaying() == false) {
 			std::cout << "end Game ";
 			system("pause");
 			break;
