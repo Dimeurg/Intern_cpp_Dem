@@ -1,0 +1,8 @@
+13 7
+s-o-o o
+|  \ x \
+o-o o o-o-o-o
+  |  x|/ \  |
+  o-o-o-o-o-e
+   \ x|\   x|
+    o o o o o
